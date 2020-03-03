@@ -1,7 +1,7 @@
 ﻿#region Apache License Version 2.0
 /*----------------------------------------------------------------
 
-Copyright 2019 Jeffrey Su & Suzhou Senparc Network Technology Co.,Ltd.
+Copyright 2020 Jeffrey Su & Suzhou Senparc Network Technology Co.,Ltd.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
 except in compliance with the License. You may obtain a copy of the License at
@@ -19,7 +19,7 @@ Detail: https://github.com/JeffreySu/WeiXinMPSDK/blob/master/license.md
 #endregion Apache License Version 2.0
 
 /*----------------------------------------------------------------
-    Copyright (C) 2019 Senparc
+    Copyright (C) 2020 Senparc
     
     文件名：CodeApi.cs
     文件功能描述：代码管理
@@ -35,6 +35,9 @@ Detail: https://github.com/JeffreySu/WeiXinMPSDK/blob/master/license.md
 
     修改标识：Senparc - 20190529
     修改描述：v4.7.101 添加“开放平台-代码管理-加急审核”接口：CodeApi.SpeedupAudit()
+
+    修改标识：Senparc - 20191030
+    修改描述：v4.7.102.1 修改 GetAuditStatus() 方法 auditid 参数类型（int -> long)
 
 ----------------------------------------------------------------*/
 
@@ -94,7 +97,7 @@ namespace Senparc.Weixin.Open.WxaAPIs
         {
             var url = string.Format(Config.ApiMpHost + "/wxa/get_qrcode?access_token={0}", accessToken.AsUrlData());
 
-            Get.Download(url, stream);
+            Get.Download(CommonDI.CommonSP, url, stream);
             return new CodeResultJson()
             {
                 errcode = ReturnCode.请求成功
@@ -160,7 +163,7 @@ namespace Senparc.Weixin.Open.WxaAPIs
         /// <param name="timeOut"></param>
         /// <returns></returns>
         [ApiBind(NeuChar.PlatformType.WeChat_Open, "CodeApi.GetAuditStatus", true)]
-        public static GetAuditResultJson GetAuditStatus(string accessToken, int auditid, int timeOut = Config.TIME_OUT)
+        public static GetAuditResultJson GetAuditStatus(string accessToken, long auditid, int timeOut = Config.TIME_OUT)
         {
             var url = string.Format(Config.ApiMpHost + "/wxa/get_auditstatus?access_token={0}", accessToken.AsUrlData());
 
@@ -400,7 +403,7 @@ namespace Senparc.Weixin.Open.WxaAPIs
         {
             var url = string.Format(Config.ApiMpHost + "/wxa/get_qrcode?access_token={0}", accessToken.AsUrlData());
 
-            await Get.DownloadAsync(url, stream).ConfigureAwait(false);
+            await Get.DownloadAsync(CommonDI.CommonSP,url, stream).ConfigureAwait(false);
             return new CodeResultJson()
             {
                 errcode = ReturnCode.请求成功
@@ -467,7 +470,7 @@ namespace Senparc.Weixin.Open.WxaAPIs
         /// <param name="timeOut"></param>
         /// <returns></returns>
         [ApiBind(NeuChar.PlatformType.WeChat_Open, "CodeApi.GetAuditStatusAsync", true)]
-        public static async Task<GetAuditResultJson> GetAuditStatusAsync(string accessToken, int auditid, int timeOut = Config.TIME_OUT)
+        public static async Task<GetAuditResultJson> GetAuditStatusAsync(string accessToken, long auditid, int timeOut = Config.TIME_OUT)
         {
             var url = string.Format(Config.ApiMpHost + "/wxa/get_auditstatus?access_token={0}", accessToken.AsUrlData());
 

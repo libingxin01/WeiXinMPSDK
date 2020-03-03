@@ -1,7 +1,7 @@
 ﻿#region Apache License Version 2.0
 /*----------------------------------------------------------------
 
-Copyright 2019 Jeffrey Su & Suzhou Senparc Network Technology Co.,Ltd.
+Copyright 2020 Jeffrey Su & Suzhou Senparc Network Technology Co.,Ltd.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
 except in compliance with the License. You may obtain a copy of the License at
@@ -19,7 +19,7 @@ Detail: https://github.com/JeffreySu/WeiXinMPSDK/blob/master/license.md
 #endregion Apache License Version 2.0
 
 /*----------------------------------------------------------------
-    Copyright (C) 2019 Senparc
+    Copyright (C) 2020 Senparc
     
     文件名：MessageHandlerAsync.cs
     文件功能描述：微信请求【异步方法】的集中处理方法
@@ -34,22 +34,17 @@ Detail: https://github.com/JeffreySu/WeiXinMPSDK/blob/master/license.md
 ----------------------------------------------------------------*/
 
 
-using System;
-using System.IO;
-using System.Xml.Linq;
-using Senparc.NeuChar.Context;
-using Senparc.Weixin.Exceptions;
-using Senparc.NeuChar.MessageHandlers;
-using Senparc.Weixin.MP.Entities;
-using Senparc.Weixin.MP.Entities.Request;
-using Senparc.Weixin.MP.Helpers;
-using System.Threading.Tasks;
-using Senparc.NeuChar;
-using System.Collections.Generic;
 using Senparc.CO2NET.Extensions;
 using Senparc.CO2NET.Trace;
+using Senparc.NeuChar;
+using Senparc.NeuChar.Context;
 using Senparc.NeuChar.Entities;
+using Senparc.NeuChar.MessageHandlers;
+using Senparc.Weixin.Exceptions;
+using Senparc.Weixin.MP.Entities;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Senparc.Weixin.MP.MessageHandlers
 {
@@ -186,7 +181,8 @@ namespace Senparc.Weixin.MP.MessageHandlers
 
             await base.OnExecutingAsync(cancellationToken).ConfigureAwait(false);
 
-            var currentMessageContext = await base.GetCurrentMessageContext();
+            var currentMessageContext = await GetCurrentMessageContext().ConfigureAwait(false);
+
             //判断是否已经接入开发者信息
             if (DeveloperInfo != null || currentMessageContext.AppStoreState == AppStoreState.Enter)
             {
