@@ -15,21 +15,22 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Senparc.Weixin.Exceptions;
-using Senparc.Weixin.MP.Entities;
-using Senparc.Weixin.MP.Helpers;
 using Senparc.NeuChar.Entities;
 using Senparc.NeuChar.Helpers;
 using Senparc.CO2NET.Utilities;
-
+//DPBMARK MP
+using Senparc.Weixin.MP.Entities;
+using Senparc.Weixin.MP.Helpers;
+using Senparc.CO2NET.Trace;
+//DPBMARK_END
 #if NET45
 using System.Web;
 using System.Configuration;
-//DPBMARK MP
-using Senparc.Weixin.MP.Sample.CommonService.TemplateMessage;
-//DPBMARK_END
+using Senparc.Weixin.MP.Sample.CommonService.TemplateMessage;//DPBMARK MP DPBMARK_END
 #else
 using Microsoft.AspNetCore.Http;
-using Senparc.Weixin.MP.Sample.CommonService.TemplateMessage;
+
+using Senparc.Weixin.MP.Sample.CommonService.TemplateMessage;//DPBMARK MP DPBMARK_END
 using Senparc.Weixin.MP.Sample.CommonService.Utilities;
 #endif
 
@@ -41,6 +42,8 @@ namespace Senparc.Weixin.MP.Sample.CommonService
     /// </summary>
     public class EventService
     {
+        #region DPBMARK MP
+
         /// <summary>
         /// 微信MessageHandler事件处理，此代码的简化MessageHandler方法已由/CustomerMessageHandler/CustomerMessageHandler_Event.cs完成，
         /// 此方法不再更新
@@ -102,6 +105,9 @@ namespace Senparc.Weixin.MP.Sample.CommonService
             return responseMessage;
         }
 
+        #endregion DPBMARK_END
+
+
         public async Task ConfigOnWeixinExceptionFunc(WeixinException ex)
         {
             Senparc.Weixin.WeixinTrace.SendCustomLog("进入 ConfigOnWeixinExceptionFunc() 方法", ex.Message);
@@ -131,6 +137,7 @@ namespace Senparc.Weixin.MP.Sample.CommonService
                                 ReturnCode.获取access_token时AppSecret错误或者access_token无效,
                                 ReturnCode.access_token超时,
                                 ReturnCode.template_id不正确,
+                                ReturnCode.调用接口的IP地址不在白名单中,//比较容易出现，需要注意！
                                 ReturnCode.缺少access_token参数,
                                 ReturnCode.回复时间超过限制,
                                 ReturnCode.api功能未授权,
@@ -144,6 +151,11 @@ namespace Senparc.Weixin.MP.Sample.CommonService
                             };
                     if (ignoreErrorCodes.Contains(jsonEx.JsonResult.errcode))
                     {
+                        if (jsonEx.JsonResult.errcode == ReturnCode.调用接口的IP地址不在白名单中)
+                        {
+                            SenparcTrace.SendCustomLog("无法发送模板消息", "IP 未设置到白名单");
+                        }
+
                         sendTemplateMessage = false;//防止无限递归，这种请款那个下不发送消息
                     }
 
